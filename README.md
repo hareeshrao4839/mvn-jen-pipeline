@@ -1,2 +1,1 @@
-# mvn-jen-pipeline
-mvn-jen-pipeline
+# maven-jenkins-pipeline

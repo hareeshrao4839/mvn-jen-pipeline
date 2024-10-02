@@ -1,8 +1,8 @@
 pipeline {
   agent any
-  tools {
-        maven "Maven 3.8.6" 
-   }
+  // tools {
+  //       maven "Maven 3.8.6" 
+  //  }
 
   stages {
       stage('Build Artifact') {
@@ -21,14 +21,11 @@ pipeline {
               }
             }
         }
-        
 
       stage('Sonarqube Analysis - SAST') {
             steps {
                   withSonarQubeEnv('SonarQube') {
-           sh "mvn sonar:sonar \
-                              -Dsonar.projectKey=maven-jenkins-pipeline \
-                        -Dsonar.host.url=http://34.173.74.192:9000" 
+           sh "sonar-scanner -X" 
                 }
            timeout(time: 2, unit: 'MINUTES') {
                       script {
@@ -36,6 +33,27 @@ pipeline {
                     }
                 }
               }
-        }
+        }        
+
+      stage('sonar-gate-status') {
+            steps {
+              sh "---> sonar gate passed<---"
+            }
+        }      
+
+      // stage('Sonarqube Analysis - SAST') {
+      //       steps {
+      //             withSonarQubeEnv('SonarQube') {
+      //      sh "mvn sonar:sonar \
+      //                         -Dsonar.projectKey=maven-jenkins-pipeline \
+      //                   -Dsonar.host.url=http://34.173.74.192:9000" 
+      //           }
+      //      timeout(time: 2, unit: 'MINUTES') {
+      //                 script {
+      //                   waitForQualityGate abortPipeline: true
+      //               }
+      //           }
+      //         }
+      //   }
      }
 }

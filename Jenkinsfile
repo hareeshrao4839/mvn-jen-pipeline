@@ -1,10 +1,10 @@
 pipeline {
-  agent any
-environtment {
-  def serviceName="sim"
-  def reg="drop1"
-}
 
+    environtment {
+       def serviceName= "sim"
+       def reg= "drop1"
+    }
+  agent any
   stages {
       stage('Build Artifact') {
             steps {

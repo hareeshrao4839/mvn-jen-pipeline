@@ -1,6 +1,6 @@
 pipeline {
 
-    environtment {
+    environment {
        def serviceName= "sim"
        def reg= "drop1"
     }

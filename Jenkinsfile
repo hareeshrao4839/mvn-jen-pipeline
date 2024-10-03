@@ -41,6 +41,7 @@ pipeline {
               sh '''
               DTE=$(date +%d-%m-%Y-%H-%M)
               docker build -t ${reg}/${serviceName}:${DTE} .
+              docker push ${reg}/${serviceName}:${DTE}
               '''
             }
         }      

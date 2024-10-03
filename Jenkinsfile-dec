@@ -40,7 +40,7 @@ pipeline {
       stage('image bake ') {
             steps {
               script {
-                dockerImage = docker.build(${reg}/${serviceName}:${env.BUILD_ID})
+                dockerImage = docker.build("${reg}/${serviceName}:${env.BUILD_ID}")
               }
             }
         }

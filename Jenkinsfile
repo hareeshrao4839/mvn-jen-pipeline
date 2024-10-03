@@ -1,8 +1,9 @@
 pipeline {
   agent any
-  // tools {
-  //       maven "Maven 3.8.6" 
-  //  }
+environtment {
+  def serviceName="sim"
+  def reg="drop1"
+}
 
   stages {
       stage('Build Artifact') {
@@ -35,9 +36,12 @@ pipeline {
               }
         }        
 
-      stage('sonar-gate-status') {
+      stage('image bake ') {
             steps {
-              sh "---> sonar gate passed<---"
+              sh '''
+              DTE=$(date +%d-%m-%Y-%H-%M)
+              docker build -t ${reg}/${serviceName}:${DTE} .
+              '''
             }
         }      
 

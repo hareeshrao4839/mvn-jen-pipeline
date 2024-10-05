@@ -43,7 +43,7 @@ pipeline {
                     }
 
                     // Run a new container with the same name
-                    sh "docker run -d --name ${containerName} your_image_name"
+                    sh "docker run -d --name ${containerName} ${imageName}:${env.BUILD_NUMBER}"
                 }
             }
         } 

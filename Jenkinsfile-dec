@@ -46,7 +46,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: mydkr-pat, variable: 'DOCKER_TOKEN')]) {
+                    withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKER_TOKEN')]) {
                         sh "echo ${DOCKER_TOKEN} | docker login -u hareeshrao4839 --password-stdin"
                         docker.image("${imageName}:${env.BUILD_NUMBER}").push()
                     }

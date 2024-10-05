@@ -1,0 +1,75 @@
+pipeline {
+
+    environment {
+       def imageName="drop1/sim"
+       DOCKERHUB_CREDENTIALS= "mydkr-pat"
+    }
+  agent any
+  stages {
+      stage('Build Artifact') {
+            steps {
+              sh "mvn clean package -DskipTests=true"
+              archive 'target/*.jar' 
+            }  
+       }
+      stage('Test Maven - JUnit') {
+            steps {
+              sh "mvn test"
+            }
+            post{
+              always{
+                junit 'target/surefire-reports/*.xml'
+              }
+            }
+        }
+
+      stage('Sonarqube Analysis - SAST') {
+            steps {
+                  withSonarQubeEnv('SonarQube') {
+           sh "sonar-scanner -X" 
+                }
+          //  timeout(time: 2, unit: 'MINUTES') {
+          //             script {
+          //               waitForQualityGate abortPipeline: true
+          //           }
+          //       }
+              }
+        }        
+
+      stage('image bake ') {
+            steps {
+              script {
+                docker.build("${imageName}:${env.BUILD_NUMBER}")
+              }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKER_TOKEN')]) {
+                        sh "echo ${DOCKER_TOKEN} | docker login -u hareeshrao4839 --password-stdin"
+                        docker.image("${imageName}:${env.BUILD_NUMBER}").push()
+                    }
+                }
+            }
+        }
+        stage('java-pkg run') {
+            steps {
+              script {
+                sh '''
+                echo "this jar app running in jenkins intance"
+                hostname
+                java -jar target/numeric-0.0.1.jar
+                sleep 3s
+                netstat -nltp
+                '''
+              }
+            }
+        }      
+     }
+    //  post {
+    //     always {
+    //         cleanWs()
+    //     }
+    //     }
+}

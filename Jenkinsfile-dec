@@ -43,13 +43,14 @@ pipeline {
               }
             }
         }
-      stage('image PUSH ') {
+        stage('Push Docker Image') {
             steps {
-              script {
-                docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS ){
-                  docker.image("${imageName}:${env.BUILD_NUMBER}").push()
+                script {
+                    withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKER_TOKEN')]) {
+                        sh "echo ${DOCKER_TOKEN} | docker login -u hareeshrao4839 --password-stdin"
+                        docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
+                    }
                 }
-              }
             }
         }      
      }

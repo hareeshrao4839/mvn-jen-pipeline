@@ -33,7 +33,7 @@ pipeline {
         stage('docker run') {
             steps {
               script {
-                def containerName=app1
+                def containerName="app1"
                 if (sh(script: "docker ps -q -f name=${containerName}", returnStdout: true).trim())
                 {
                   echo "Stopping and removing existing container..."

@@ -30,19 +30,21 @@ pipeline {
         //         }
         //     }
         // }
-        stage('docker run') {
+        stage('Check and Run Docker Container') {
             steps {
-              script {
-                def containerName="app1"
-                if (sh(script: "docker ps -q -f name=${containerName}", returnStdout: true).trim())
-                {
-                  echo "Stopping and removing existing container..."
-                  docker stop ${containerName}
-                  docker rm ${containerName}
-                }
-                sh "docker run -d --name ${containerName} ${imageName}:${env.BUILD_NUMBER}"
+                script {
+                    def containerName = "app1"
 
-              }
+                    // Check if a container with the same name is running
+                    if (sh(script: "docker ps -q -f name=${containerName}", returnStdout: true).trim()) {
+                        echo "Stopping and removing existing container..."
+                        sh "docker stop ${containerName}"
+                        sh "docker rm ${containerName}"
+                    }
+
+                    // Run a new container with the same name
+                    sh "docker run -d --name ${containerName} your_image_name"
+                }
             }
         } 
 

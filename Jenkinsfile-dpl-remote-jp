@@ -56,7 +56,9 @@ pipeline {
                 script {
                     // Run the JAR file on the server
                     sh """
-                    sshpass -p ${env.SERVER_PASSWORD} ssh ${env.SERVER_USER}@${env.SERVER_IP} 'nohup java -jar /opt/javaApps/numeric-0.0.1.jar &'
+                    sshpass -p ${env.SERVER_PASSWORD} ssh ${env.SERVER_USER}@${env.SERVER_IP} 'java -jar /opt/javaApps/numeric-0.0.1.jar > /dev/null 2>&1 &'
+                    netstat -nltp | grep java
+                    
                     """
                 }
             }

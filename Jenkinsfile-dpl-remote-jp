@@ -3,7 +3,7 @@ pipeline {
     environment {
         SERVER_IP = '10.128.0.30'
         SERVER_USER = 'appuser'
-        SERVER_PASSWORD = 'pass$123'
+        SERVER_PASSWORD = 'pass123'
     }
   agent any
   stages {

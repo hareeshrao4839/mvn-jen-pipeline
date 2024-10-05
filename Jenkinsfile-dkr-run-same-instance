@@ -1,0 +1,57 @@
+pipeline {
+
+    environment {
+       def imageName="drop1/sim"
+       DOCKERHUB_CREDENTIALS= "mydkr-pat"
+    }
+  agent any
+  stages {
+      stage('Build Artifact') {
+            steps {
+              sh "mvn clean package -DskipTests=true"
+              archive 'target/*.jar' 
+            }  
+       }
+
+      stage('image bake ') {
+            steps {
+              script {
+                docker.build("${imageName}:${env.BUILD_NUMBER}")
+              }
+            }
+        }
+        // stage('Push Docker Image') {
+        //     steps {
+        //         script {
+        //             withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKER_TOKEN')]) {
+        //                 sh "echo ${DOCKER_TOKEN} | docker login -u hareeshrao4839 --password-stdin"
+        //                 docker.image("${imageName}:${env.BUILD_NUMBER}").push()
+        //             }
+        //         }
+        //     }
+        // }
+        stage('docker run') {
+            steps {
+              script {
+                def containerName=app1
+                if (sh(script: "docker ps -q -f name=${containerName}", returnStdout: true).trim())
+                {
+                  echo "Stopping and removing existing container..."
+                  docker stop ${containerName}
+                  docker rm ${containerName}
+                }
+                sh "docker run -d --name ${containerName} ${imageName}:${env.BUILD_NUMBER}"
+
+              }
+            }
+        } 
+
+
+
+     }
+    //  post {
+    //     always {
+    //         cleanWs()
+    //     }
+    //     }
+}

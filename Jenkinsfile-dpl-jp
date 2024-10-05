@@ -59,8 +59,8 @@ pipeline {
                 sh '''
                 echo "this jar app running in jenkins intance"
                 hostname
-                java -jar target/numeric-0.0.1.jar --server.port=8090
-                sleep 3s
+                java -jar target/numeric-0.0.1.jar --server.port=8090 > /dev/null 2>&1 &
+                sleep 5s
                 netstat -nltp
                 '''
               }

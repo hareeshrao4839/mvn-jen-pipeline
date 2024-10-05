@@ -1,0 +1,71 @@
+pipeline {
+
+    environment {
+        SERVER_IP = '10.128.0.30'
+        SERVER_USER = 'appuser'
+        SERVER_PASSWORD = 'pass$123'
+    }
+  agent any
+  stages {
+      stage('Build Artifact') {
+            steps {
+              sh "mvn clean package -DskipTests=true"
+              archive 'target/*.jar' 
+            }  
+       }
+      // stage('Test Maven - JUnit') {
+      //       steps {
+      //         sh "mvn test"
+      //       }
+      //       post{
+      //         always{
+      //           junit 'target/surefire-reports/*.xml'
+      //         }
+      //       }
+      //   }
+
+      // stage('Sonarqube Analysis - SAST') {
+      //       steps {
+      //             withSonarQubeEnv('SonarQube') {
+      //      sh "sonar-scanner -X" 
+      //           }
+      //     //  timeout(time: 2, unit: 'MINUTES') {
+      //     //             script {
+      //     //               waitForQualityGate abortPipeline: true
+      //     //           }
+      //     //       }
+      //         }
+      //   }        
+
+        stage('App Copy to AppServer') {
+            steps {
+                script {
+                    // Define the JAR file path
+                    def jarFile = 'target/numeric-0.0.1.jar'
+                    
+                    // Push the JAR file to the server
+                    sh """
+                    sshpass -p ${env.SERVER_PASSWORD} ssh ${env.SERVER_USER}@${env.SERVER_IP} 'rm -rf /opt/javaApps/*'
+                    sshpass -p ${env.SERVER_PASSWORD} scp ${jarFile} ${env.SERVER_USER}@${env.SERVER_IP}:/opt/javaApps/
+                    """
+                }
+            }
+        }
+        stage('Run') {
+            steps {
+                script {
+                    // Run the JAR file on the server
+                    sh """
+                    sshpass -p ${env.SERVER_PASSWORD} ssh ${env.SERVER_USER}@${env.SERVER_IP} 'nohup java -jar /opt/javaApps/numeric-0.0.1.jar &'
+                    """
+                }
+            }
+        }   
+
+     }
+    //  post {
+    //     always {
+    //         cleanWs()
+    //     }
+    //     }
+}

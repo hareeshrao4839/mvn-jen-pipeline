@@ -2,7 +2,7 @@ pipeline {
 
     environment {
        def imageName="drop1/sim"
-       def DOCKERHUB_CREDENTIALS= "mydkr-pat"
+       DOCKERHUB_CREDENTIALS= "mydkr-pat"
     }
   agent any
   stages {
@@ -46,9 +46,9 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKER_TOKEN')]) {
+                    withCredentials([string(credentialsId: mydkr-pat, variable: 'DOCKER_TOKEN')]) {
                         sh "echo ${DOCKER_TOKEN} | docker login -u hareeshrao4839 --password-stdin"
-                        docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
+                        docker.image("${imageName}:${env.BUILD_NUMBER}").push()
                     }
                 }
             }

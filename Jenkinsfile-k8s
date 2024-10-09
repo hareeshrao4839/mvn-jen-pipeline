@@ -4,7 +4,7 @@ pipeline {
        def imageName="drop1/sim"
        DOCKERHUB_CREDENTIALS= "mydkr-pat"
     }
-  agent ses-02
+  agent { label 'ses-02' }
   stages {
       stage('Build Artifact') {
             steps {

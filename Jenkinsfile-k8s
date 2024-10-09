@@ -16,7 +16,7 @@ pipeline {
       stage('image bake ') {
             steps {
               script {
-                docker.build("${imageName}:${env.BUILD_NUMBER}")
+                def image = docker.build("${imageName}:${env.BUILD_NUMBER}")
               }
             }
         }

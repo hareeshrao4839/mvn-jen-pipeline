@@ -45,10 +45,10 @@ volumeMounts:
 volumes:
   - name: certs
     secret:
-      secretName: s1-sec
+      secretName: numeric-secret
   - name: conf
     configMap:
-      name: ng1-conf       
+      name: numeric-cm   
 
 vault:
   enabled: false

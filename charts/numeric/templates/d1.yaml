@@ -25,7 +25,7 @@ spec:
       containers:
       - name: {{ .Values.App.Name}}
         image: "{{ .Values.image.name}}:{{ .Values.image.tag}}"
-        imagePullPolicy: IfNotFound
+        imagePullPolicy: IfNotPresent
         env:
         - name: MY_KEY
           valueFrom:

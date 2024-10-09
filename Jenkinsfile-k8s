@@ -55,8 +55,6 @@ pipeline {
             }
         }
 
-helm template numeric-v1 /Users/ragnar/Desktop/mystuff/k8s/TNG_RnD/mvn-jen-pipeline/charts/numeric -f /Users/ragnar/Desktop/mystuff/k8s/TNG_RnD/mvn-jen-pipeline/h-override/override-values.yaml --set=image.tag=v10
-
      }
     //  post {
     //     always {

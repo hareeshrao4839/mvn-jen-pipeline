@@ -16,20 +16,20 @@ pipeline {
       stage('image bake ') {
             steps {
               script {
-                def image = docker.build("${imageName}:${env.BUILD_NUMBER}")
+                 docker.build("${imageName}:${env.BUILD_NUMBER}")
               }
             }
         }
-        // stage('Push Docker Image') {
-        //     steps {
-        //         script {
-        //             withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKER_TOKEN')]) {
-        //                 sh "echo ${DOCKER_TOKEN} | docker login -u hareeshrao4839 --password-stdin"
-        //                 docker.image("${imageName}:${env.BUILD_NUMBER}").push()
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKER_TOKEN')]) {
+                        sh "echo ${DOCKER_TOKEN} | docker login -u hareeshrao4839 --password-stdin"
+                        docker.image("${imageName}:${env.BUILD_NUMBER}").push()
+                    }
+                }
+            }
+        }
       stage('helm-validate ') {
             steps {
               script {

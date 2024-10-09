@@ -1,0 +1,66 @@
+pipeline {
+
+    environment {
+       def imageName="drop1/sim"
+       DOCKERHUB_CREDENTIALS= "mydkr-pat"
+    }
+  agent ses-02
+  stages {
+      stage('Build Artifact') {
+            steps {
+              sh "mvn clean package -DskipTests=true"
+              archive 'target/*.jar' 
+            }  
+       }
+
+      stage('image bake ') {
+            steps {
+              script {
+                docker.build("${imageName}:${env.BUILD_NUMBER}")
+              }
+            }
+        }
+        // stage('Push Docker Image') {
+        //     steps {
+        //         script {
+        //             withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKER_TOKEN')]) {
+        //                 sh "echo ${DOCKER_TOKEN} | docker login -u hareeshrao4839 --password-stdin"
+        //                 docker.image("${imageName}:${env.BUILD_NUMBER}").push()
+        //             }
+        //         }
+        //     }
+        // }
+      stage('helm-validate ') {
+            steps {
+              script {
+                sh '''
+                helm template numeric-v1 charts/numeric \
+                -f h-override/override-values.yaml \
+                --set=image.tag=1
+                '''
+              }
+            }
+        }
+
+      stage('deploy ') {
+            steps {
+              script {
+                sh '''
+                helm upgrade numeric-v1 charts/numeric \
+                -f h-override/override-values.yaml \
+                --set=image.tag=1 --namespace app1 --install --create-namespace \
+                --version 1.2.0 --force 
+                '''
+              }
+            }
+        }
+
+helm template numeric-v1 /Users/ragnar/Desktop/mystuff/k8s/TNG_RnD/mvn-jen-pipeline/charts/numeric -f /Users/ragnar/Desktop/mystuff/k8s/TNG_RnD/mvn-jen-pipeline/h-override/override-values.yaml --set=image.tag=v10
+
+     }
+    //  post {
+    //     always {
+    //         cleanWs()
+    //     }
+    //     }
+}

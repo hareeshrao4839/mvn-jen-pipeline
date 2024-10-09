@@ -36,7 +36,7 @@ pipeline {
                 sh '''
                 helm template numeric-v1 charts/numeric \
                 -f h-override/override-values.yaml \
-                --set image.tag=${env.BUILD_NUMBER}
+                --set image.tag=\"${env.BUILD_NUMBER}\"
                 '''
               }
             }

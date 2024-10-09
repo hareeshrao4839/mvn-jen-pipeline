@@ -33,11 +33,12 @@ pipeline {
       stage('helm-validate ') {
             steps {
               script {
-                sh '''
+                sh """
+                #/!bin/bash
                 helm template numeric-v1 charts/numeric \
                 -f h-override/override-values.yaml \
-                --set image.tag=\"${env.BUILD_NUMBER}\"
-                '''
+                --set image.tag="${env.BUILD_NUMBER}"
+                """
               }
             }
         }
@@ -45,12 +46,12 @@ pipeline {
       stage('deploy ') {
             steps {
               script {
-                sh '''
+                sh """
                 helm upgrade numeric-v1 charts/numeric \
                 -f h-override/override-values.yaml \
                 --set image.tag=${env.BUILD_NUMBER} --namespace app1 --install --create-namespace \
                 --version 1.2.0 --force 
-                '''
+                """
               }
             }
         }

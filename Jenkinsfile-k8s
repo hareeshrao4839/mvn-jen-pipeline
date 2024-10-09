@@ -1,7 +1,7 @@
 pipeline {
 
     environment {
-       def imageName="drop1/sim"
+       def imageName="drop1/numeric"
        DOCKERHUB_CREDENTIALS= "mydkr-pat"
     }
   agent { label 'ses-02' }
@@ -36,7 +36,7 @@ pipeline {
                 sh '''
                 helm template numeric-v1 charts/numeric \
                 -f h-override/override-values.yaml \
-                --set=image.tag=8
+                --set=image.tag=${env.BUILD_NUMBER}
                 '''
               }
             }
@@ -48,7 +48,7 @@ pipeline {
                 sh '''
                 helm upgrade numeric-v1 charts/numeric \
                 -f h-override/override-values.yaml \
-                --set=image.tag=8 --namespace app1 --install --create-namespace \
+                --set=image.tag=${env.BUILD_NUMBER} --namespace app1 --install --create-namespace \
                 --version 1.2.0 --force 
                 '''
               }

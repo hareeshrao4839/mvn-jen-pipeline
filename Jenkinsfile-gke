@@ -47,18 +47,21 @@ pipeline {
       //         }
       //       }
       //   }
-      stage('Deploy to kubernetes'){
-        steps{
-            
-            step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, region: env.LOCATION, manifestPattern: 'k8s_deployment_service.yaml', credentialsId: env.GCP_CREDENTIALS_ID, verifyDeployments: true])
-		   echo "Deployment Finished ..."
-        }
-       }
+        stage('Setup Gcloud') {
+            steps {
+                withCredentials([file(credentialsId: env.GCP_CREDENTIALS_ID, variable: 'GCLOUD_SERVICE_KEY')]) {
+                    sh 'gcloud auth activate-service-account --key-file=$GCLOUD_SERVICE_KEY'
+                    sh "gcloud config set project ${env.PROJECT_ID}"
+                    sh "gcloud container clusters get-credentials ${env.CLUSTER_NAME} --region ${env.LOCATION} --project ${env.PROJECT_ID}"
+                    sh " kubectl get ns "
+                }
 
-     }
+      }
+        }
     //  post {
     //     always {
     //         cleanWs()
     //     }
     //     }
+}
 }

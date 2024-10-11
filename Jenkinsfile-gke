@@ -49,7 +49,7 @@ pipeline {
       //   }
         stage('Setup Gcloud') {
             steps {
-                withCredentials([file(credentialsId: env.GCP_CREDENTIALS_ID, variable: 'GCLOUD_SERVICE_KEY')]) {
+                withCredentials([file(credentialsId: 'stb-sa', variable: 'GCLOUD_SERVICE_KEY')]) {
                     sh 'gcloud auth activate-service-account --key-file=$GCLOUD_SERVICE_KEY'
                     sh "gcloud config set project ${env.PROJECT_ID}"
                     sh "gcloud container clusters get-credentials ${env.CLUSTER_NAME} --region ${env.LOCATION} --project ${env.PROJECT_ID}"

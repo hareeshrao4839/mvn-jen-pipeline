@@ -47,16 +47,27 @@ pipeline {
       //         }
       //       }
       //   }
-        stage('Setup Gcloud') {
+            stage('setup gcloud ') {
             steps {
-                withCredentials([file(credentialsId: 'stb-sa', variable: 'GCLOUD_SERVICE_KEY')]) {
-                    sh 'gcloud auth activate-service-account --key-file=$GCLOUD_SERVICE_KEY'
-                    sh "gcloud config set project ${env.PROJECT_ID}"
-                    sh "gcloud container clusters get-credentials ${env.CLUSTER_NAME} --region ${env.LOCATION} --project ${env.PROJECT_ID}"
-                    sh " kubectl get ns "
-                }
+              script {
+                sh """
+                #/!bin/bash
+                sh "gcloud container clusters get-credentials ${env.CLUSTER_NAME} --region ${env.LOCATION} --project ${env.PROJECT_ID}"
+                sh " kubectl get ns "
+                """
+              }
+            }
+        }
+      //   stage('Setup Gcloud') {
+      //       steps {
+      //           withCredentials([file(credentialsId: 'stb-sa', variable: 'GCLOUD_SERVICE_KEY')]) {
+      //               sh 'gcloud auth activate-service-account --key-file=$GCLOUD_SERVICE_KEY'
+      //               sh "gcloud config set project ${env.PROJECT_ID}"
+      //               sh "gcloud container clusters get-credentials ${env.CLUSTER_NAME} --region ${env.LOCATION} --project ${env.PROJECT_ID}"
+      //               sh " kubectl get ns "
+      //           }
 
-      }
+      // }
         }
     //  post {
     //     always {

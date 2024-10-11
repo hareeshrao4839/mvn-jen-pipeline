@@ -52,8 +52,8 @@ pipeline {
               script {
                 sh """
                 #/!bin/bash
-                sh "gcloud container clusters get-credentials ${env.CLUSTER_NAME} --region ${env.LOCATION} --project ${env.PROJECT_ID}"
-                sh " kubectl get ns "
+                gcloud container clusters get-credentials ${env.CLUSTER_NAME} --region ${env.LOCATION} --project ${env.PROJECT_ID}
+                kubectl get ns
                 """
               }
             }

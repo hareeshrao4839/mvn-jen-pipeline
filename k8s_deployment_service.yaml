@@ -18,7 +18,6 @@ spec:
       labels:
         app: digdong
     spec:
-      serviceAccountName: numeric-sa
       containers:
       - name: digdong
         image: nginx:latest

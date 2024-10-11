@@ -21,7 +21,7 @@ spec:
       serviceAccountName: numeric-sa
       containers:
       - name: digdong
-        image: drop1/numeric:15
+        image: nginx:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

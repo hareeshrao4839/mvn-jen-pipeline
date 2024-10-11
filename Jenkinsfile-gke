@@ -58,6 +58,15 @@ pipeline {
               }
             }
         }
+        stage('app deploy ') {
+            steps {
+              script {
+                sh """
+                kubectl apply -f ./k8s_deployment_service.yaml
+                """
+              }
+            }
+        }
       //   stage('Setup Gcloud') {
       //       steps {
       //           withCredentials([file(credentialsId: 'stb-sa', variable: 'GCLOUD_SERVICE_KEY')]) {

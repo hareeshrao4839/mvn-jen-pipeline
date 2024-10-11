@@ -9,7 +9,7 @@ pipeline {
        GCP_CREDENTIALS_ID="stb-sa"
 
     }
-  agent { label 'ses-02' }
+  agent any
   stages {
       stage('Build Artifact') {
             steps {

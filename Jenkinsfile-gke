@@ -1,0 +1,64 @@
+pipeline {
+
+    environment {
+       imageName="drop1/numeric"
+       DOCKERHUB_CREDENTIALS= "mydkr-pat"
+       PROJECT_ID="compelling-cat-431716-m7"
+       CLUSTER_NAME="autopilot-cluster-1"
+       location="us-central1"
+       GCP_CREDENTIALS_ID="stb-sa"
+
+    }
+  agent { label 'ses-02' }
+  stages {
+      stage('Build Artifact') {
+            steps {
+              sh "mvn clean package -DskipTests=true"
+              archive 'target/*.jar' 
+            }  
+       }
+
+      // stage('image bake ') {
+      //       steps {
+      //         script {
+      //            docker.build("${imageName}:${env.BUILD_NUMBER}")
+      //         }
+      //       }
+      //   }
+      //   stage('Push Docker Image') {
+      //       steps {
+      //           script {
+      //               withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKER_TOKEN')]) {
+      //                   sh "echo ${DOCKER_TOKEN} | docker login -u hareeshrao4839 --password-stdin"
+      //                   docker.image("${imageName}:${env.BUILD_NUMBER}").push()
+      //               }
+      //           }
+      //       }
+      // //   }
+      // stage('helm-validate ') {
+      //       steps {
+      //         script {
+      //           sh """
+      //           #/!bin/bash
+      //           helm template numeric-v1 charts/numeric \
+      //           -f h-override/override-values.yaml \
+      //           --set image.tag="${env.BUILD_NUMBER}"
+      //           """
+      //         }
+      //       }
+      //   }
+      stage('Deploy to kubernetes'){
+        steps{
+            
+            step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, region: env.LOCATION, manifestPattern: 'k8s_deployment_service.yaml', credentialsId: env.GCP_CREDENTIALS_ID, verifyDeployments: true])
+		   echo "Deployment Finished ..."
+        }
+       }
+
+     }
+    //  post {
+    //     always {
+    //         cleanWs()
+    //     }
+    //     }
+}

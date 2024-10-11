@@ -1,35 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: numeric
+  namespace: default
   labels:
-    app: devsecops
-  name: devsecops
+    env: bld
+    type: ng1
+    maintainer: helm
+    version: v1d1
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: devsecops
-  strategy: {}
+      app: digdong
   template:
     metadata:
       labels:
-        app: devsecops
+        app: digdong
     spec:
+      serviceAccountName: numeric-sa
       containers:
-      - image: replace
-        name: devsecops-container
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: devsecops
-  name: devsecops-svc
-spec:
-  ports:
-  - port: 8080
-    protocol: TCP
-    targetPort: 8080
-  selector:
-    app: devsecops
-  type: NodePort
+      - name: digdong
+        image: drop1/numeric:15
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: tango
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "50m"
+          limits:
+            memory: "200Mi"
+            cpu: "100m"

@@ -19,7 +19,7 @@ metadata:
   name: {{ .Chart.Name}}-cluster
   namespace: {{ .Release.Namespace}}
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
 {{ include "selector.labels" . | indent 4}}
   ports:

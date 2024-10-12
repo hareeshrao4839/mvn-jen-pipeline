@@ -2,6 +2,7 @@ App:
   Name: digdong
   gcp_sa: svc-app2
   gcp_projectID: complie_cat_123
+  reg_secret: my-reg-secret
 
 
 App_Labels:

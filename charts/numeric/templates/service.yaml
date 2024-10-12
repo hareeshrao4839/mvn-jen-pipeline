@@ -8,5 +8,5 @@ spec:
 {{ include "selector.labels" . | indent 4}}
   ports:
     - protocol: TCP
-      port: 80          # expose or external or service port
-      targetPort: 9376  #container port
+      port: 8090          # expose or external or service port
+      targetPort: 8090  #container port

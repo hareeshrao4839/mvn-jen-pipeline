@@ -15,7 +15,7 @@ image:
   name: drop1/numeric
   tag: latest
 Port:
-  Number: 8080
+  Number: 8090
   Name: tango
 replicaCount: 1
 DeploymentStrategyType: Recreate 
